@@ -1,6 +1,8 @@
 package com.grupo5.sisvita.api.services;
 
-import com.grupo5.sisvita.api.dto.SpecialistDTO;
+import com.grupo5.sisvita.api.dto.response.SpecialistDTO;
+import com.grupo5.sisvita.api.dto.requests.SpecialistRequest;
+import com.grupo5.sisvita.api.dto.requests.UserRequest;
 import com.grupo5.sisvita.api.entities.Specialist;
 import com.grupo5.sisvita.api.entities.User;
 import com.grupo5.sisvita.api.repositories.SpecialistRepository;
@@ -20,10 +22,11 @@ public class SpecialistService {
     private UserService userService;
 
     @Transactional
-    public Specialist saveSpecialist(Specialist specialist) {
-        User user = specialist.getUser();
-        if (user != null) {
-            user = userService.saveUser(user);
+    public Specialist saveSpecialist(SpecialistRequest specialistRequest) {
+        UserRequest userRequest = specialistRequest.getUserRequest();
+        Specialist specialist = SpecialistRequest.toEntity(specialistRequest);
+        if (userRequest != null) {
+            User user = userService.saveUser(userRequest);
             specialist.setUser(user);
         }
         return specialistRepository.save(specialist);

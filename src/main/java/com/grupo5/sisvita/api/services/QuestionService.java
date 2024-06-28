@@ -1,13 +1,12 @@
 package com.grupo5.sisvita.api.services;
 
-import com.grupo5.sisvita.api.dto.QuestionDTO;
+import com.grupo5.sisvita.api.dto.response.QuestionDTO;
 import com.grupo5.sisvita.api.entities.Question;
 import com.grupo5.sisvita.api.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,8 +19,8 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
-    public Optional<Question> findById(Long id) {
-        return questionRepository.findById(id);
+    public Question findById(Long id) {
+        return questionRepository.findById(id).orElse(null);
     }
 
     public List<QuestionDTO> findAllQuestions() {
