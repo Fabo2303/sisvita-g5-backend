@@ -1,5 +1,6 @@
 package com.grupo5.sisvita.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.grupo5.sisvita.config.CustomDateDeserializer;
 import jakarta.persistence.*;
@@ -18,6 +19,7 @@ public class Persona {
     private String lastName;
     private String secondLastName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date birthDate;
 
