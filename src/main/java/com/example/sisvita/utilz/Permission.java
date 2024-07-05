@@ -2,5 +2,13 @@ package com.example.sisvita.utilz;
 
 public enum Permission {
     READ_ALL_USERS,
-    CREATE_USER,
+    READ_ALL_TESTS,
+    SAVE_CONSIGNATION,
+    READ_ALL_CONSIGNATIONS,
+    SEE_HEAT_MAP,
+    SEE_TABLE_REPORT,
+    TAKE_TEST,
+    SEE_YOUR_TESTS,
+    SEE_YOUR_CONSIGNATIONS,
+    READ_ALL_PATIENTS
 }

@@ -9,9 +9,31 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public enum Role {
-    SPECIALIST(List.of(Permission.READ_ALL_USERS)),
-    PATIENT(List.of(Permission.READ_ALL_USERS)),
-    ADMIN(Arrays.asList(Permission.READ_ALL_USERS, Permission.CREATE_USER));
+    SPECIALIST(List.of(
+            Permission.READ_ALL_TESTS,
+            Permission.TAKE_TEST,
+            Permission.SEE_YOUR_TESTS,
+            Permission.SEE_YOUR_CONSIGNATIONS)
+    ),
+    PATIENT(List.of(
+            Permission.READ_ALL_PATIENTS,
+            Permission.READ_ALL_TESTS,
+            Permission.SAVE_CONSIGNATION,
+            Permission.READ_ALL_CONSIGNATIONS,
+            Permission.SEE_HEAT_MAP,
+            Permission.SEE_TABLE_REPORT,
+            Permission.SEE_YOUR_CONSIGNATIONS)),
+    ADMIN(Arrays.asList(
+            Permission.READ_ALL_USERS,
+            Permission.READ_ALL_TESTS,
+            Permission.SAVE_CONSIGNATION,
+            Permission.READ_ALL_CONSIGNATIONS,
+            Permission.SEE_HEAT_MAP,
+            Permission.SEE_TABLE_REPORT,
+            Permission.TAKE_TEST,
+            Permission.SEE_YOUR_TESTS,
+            Permission.SEE_YOUR_CONSIGNATIONS)
+    );
 
     private List<Permission> permissions;
 
