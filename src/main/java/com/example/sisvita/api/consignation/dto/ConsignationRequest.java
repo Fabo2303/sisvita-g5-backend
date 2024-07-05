@@ -1,6 +1,5 @@
 package com.example.sisvita.api.consignation.dto;
 
-import com.example.sisvita.config.deserializers.DateDeserializer;
 import com.example.sisvita.config.deserializers.TimestampDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data

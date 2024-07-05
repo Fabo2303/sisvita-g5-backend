@@ -1,10 +1,9 @@
 package com.example.sisvita.api.consignation.web;
 
-import com.example.sisvita.api.consignation.dto.ConsignationRequest;
-import com.example.sisvita.api.consignation.dto.ConsignationResponse;
-import com.example.sisvita.utilz.ErrorResponse;
 import com.example.sisvita.api.consignation.domain.Consignation;
 import com.example.sisvita.api.consignation.domain.ConsignationService;
+import com.example.sisvita.api.consignation.dto.ConsignationRequest;
+import com.example.sisvita.utilz.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

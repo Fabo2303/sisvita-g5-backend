@@ -5,14 +5,12 @@ import com.example.sisvita.api.patient.domain.Patient;
 import com.example.sisvita.api.resolvedtest.domain.ResolvedTest;
 import com.example.sisvita.api.specialist.domain.Specialist;
 import com.example.sisvita.api.treatment.domain.Treatment;
-import com.example.sisvita.config.deserializers.DateDeserializer;
 import com.example.sisvita.config.deserializers.TimestampDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data

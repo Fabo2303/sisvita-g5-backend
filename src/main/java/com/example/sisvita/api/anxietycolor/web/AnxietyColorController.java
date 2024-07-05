@@ -1,8 +1,8 @@
 package com.example.sisvita.api.anxietycolor.web;
 
-import com.example.sisvita.utilz.ErrorResponse;
 import com.example.sisvita.api.anxietycolor.domain.AnxietyColor;
 import com.example.sisvita.api.anxietycolor.domain.AnxietyColorService;
+import com.example.sisvita.utilz.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
