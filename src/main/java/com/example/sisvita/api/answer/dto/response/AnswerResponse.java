@@ -13,13 +13,4 @@ public class AnswerResponse {
     private Integer idResolvedTest;
     private Integer idQuestion;
     private Integer idAlternative;
-
-    public static AnswerResponse fromEntity(Answer answer) {
-        return new AnswerResponse(
-                answer.getId(),
-                answer.getResolvedTest().getId(),
-                answer.getQuestion().getId(),
-                answer.getAlternative().getId()
-        );
-    }
 }

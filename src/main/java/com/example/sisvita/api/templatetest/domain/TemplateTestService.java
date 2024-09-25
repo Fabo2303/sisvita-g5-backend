@@ -1,51 +1,40 @@
 package com.example.sisvita.api.templatetest.domain;
 
 import com.example.sisvita.api.templatetest.dto.TemplateTestResponse;
-import com.example.sisvita.api.templatetest.dto.TemplateTestWithAlternativesAndQuestionsResponse;
-import com.example.sisvita.api.templatetest.infrastructure.JpaTemplateTestRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.api.templatetest.infrastructure.TemplateTestRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TemplateTestService {
-    private final JpaTemplateTestRepository jpaTemplateTestRepository;
+    private final TemplateTestRepository templateTestRepository;
 
-    @Autowired
-    public TemplateTestService(JpaTemplateTestRepository jpaTemplateTestRepository) {
-        this.jpaTemplateTestRepository = jpaTemplateTestRepository;
+    public TemplateTestService(TemplateTestRepository templateTestRepository) {
+        this.templateTestRepository = templateTestRepository;
     }
 
     public List<String> findAllName() {
-        return jpaTemplateTestRepository.findAllName();
+        return templateTestRepository.findAllName();
     }
 
     public List<String> findClassificationNameByName(String name) {
-        return jpaTemplateTestRepository.findClassificationNameByName(name);
+        return templateTestRepository.findClassificationNameByName(name);
     }
 
-    public TemplateTest saveTemplateTest(TemplateTest templateTest) {
-        return jpaTemplateTestRepository.save(templateTest);
+    public Boolean saveTemplateTest(TemplateTest templateTest) {
+        return templateTestRepository.save(templateTest);
     }
 
     public TemplateTest findById(Integer id) {
-        return jpaTemplateTestRepository.findById(id).orElse(null);
+        return templateTestRepository.findById(id);
     }
 
     public List<TemplateTest> findAll() {
-        return jpaTemplateTestRepository.findAll();
+        return templateTestRepository.findAll();
     }
 
     public List<TemplateTestResponse> findAllTemplateTestResponse() {
-        return jpaTemplateTestRepository.findAllTemplateTestResponse();
-    }
-
-    public TemplateTestWithAlternativesAndQuestionsResponse findDtoById(Integer id) {
-        TemplateTest templateTest = jpaTemplateTestRepository.findById(id).orElse(null);
-       if (templateTest == null) {
-            return null;
-        }
-        return TemplateTestWithAlternativesAndQuestionsResponse.fromEntity(templateTest);
+        return templateTestRepository.findAllTemplateTestResponse();
     }
 }

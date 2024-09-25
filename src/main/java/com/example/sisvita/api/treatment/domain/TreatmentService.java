@@ -1,33 +1,31 @@
 package com.example.sisvita.api.treatment.domain;
 
-import com.example.sisvita.api.treatment.infrastructure.JpaTreatmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.api.treatment.infrastructure.TreatmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TreatmentService {
-    private final JpaTreatmentRepository jpaTreatmentRepository;
+    private final TreatmentRepository treatmentRepository;
 
-    @Autowired
-    public TreatmentService(JpaTreatmentRepository jpaTreatmentRepository) {
-        this.jpaTreatmentRepository = jpaTreatmentRepository;
+    public TreatmentService(TreatmentRepository treatmentRepository) {
+        this.treatmentRepository = treatmentRepository;
     }
 
-    public Treatment save(Treatment treatment) {
-        return jpaTreatmentRepository.save(treatment);
+    public Boolean save(Treatment treatment) {
+        return treatmentRepository.save(treatment);
     }
 
-    public List<Treatment> saveAll(List<Treatment> treatments) {
-        return jpaTreatmentRepository.saveAll(treatments);
+    public Boolean saveAll(List<Treatment> treatments) {
+        return treatmentRepository.saveAll(treatments);
     }
 
     public List<Treatment> findAll() {
-        return jpaTreatmentRepository.findAll();
+        return treatmentRepository.findAll();
     }
 
     public Treatment findById(Integer id) {
-        return jpaTreatmentRepository.findById(id).orElse(null);
+        return treatmentRepository.findById(id);
     }
 }

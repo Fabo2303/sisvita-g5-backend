@@ -2,7 +2,8 @@ package com.example.sisvita.api.user.web;
 
 import com.example.sisvita.api.user.domain.User;
 import com.example.sisvita.api.user.domain.UserService;
-import com.example.sisvita.utilz.ErrorResponse;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,29 +15,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping(Routes.API_USER)
 public class UserController {
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<User> findById(@PathVariable Integer id) {
         User user = userService.findById(id);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("User not found").build());
+            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(user);
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> findAll() {
         List<User> users = userService.findAll();
         if (users.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("No users found").build());
+            throw new CustomException("Users not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(users);
     }

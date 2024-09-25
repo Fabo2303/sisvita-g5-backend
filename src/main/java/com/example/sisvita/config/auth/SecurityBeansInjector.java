@@ -1,6 +1,7 @@
 package com.example.sisvita.config.auth;
 
-import com.example.sisvita.api.user.infrastructure.JpaUserRepository;
+import com.example.sisvita.api.user.domain.UserService;
+import com.example.sisvita.api.user.infrastructure.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,30 +15,30 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SecurityBeansInjector {
-    @Autowired
-    private JpaUserRepository userRepository;
+    private final UserService userService;
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public SecurityBeansInjector(UserService userService) {
+        this.userService = userService;
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDetailsService userDetailsService() {
+        return userService::findByUsername;
     }
 }

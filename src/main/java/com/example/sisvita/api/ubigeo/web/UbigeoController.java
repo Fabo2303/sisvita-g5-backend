@@ -2,93 +2,91 @@ package com.example.sisvita.api.ubigeo.web;
 
 import com.example.sisvita.api.ubigeo.domain.Ubigeo;
 import com.example.sisvita.api.ubigeo.domain.UbigeoService;
-import com.example.sisvita.utilz.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/ubigeo")
+@RequestMapping(Routes.API_UBIGEO)
 public class UbigeoController {
     private final UbigeoService ubigeoService;
 
-    @Autowired
     public UbigeoController(UbigeoService ubigeoService) {
         this.ubigeoService = ubigeoService;
     }
 
     @PostMapping()
-    public ResponseEntity<?> saveUbigeo(@RequestBody Ubigeo ubigeo) {
-        Ubigeo savedUbigeo = ubigeoService.saveUbigeo(ubigeo);
-        return ResponseEntity.ok(savedUbigeo);
+    public ResponseEntity<String> saveUbigeo(@RequestBody Ubigeo ubigeo) {
+        Boolean savedUbigeo = ubigeoService.saveUbigeo(ubigeo);
+        if (!savedUbigeo) {
+            throw new CustomException("Ubigeo not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Ubigeo saved");
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllUbigeos() {
+    public ResponseEntity<List<Ubigeo>> getAllUbigeos() {
         List<Ubigeo> ubigeos = ubigeoService.findAll();
         if (ubigeos.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Ubigeos not found").build());
+            throw new CustomException("No ubigeos found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(ubigeos);
     }
 
     @GetMapping("/{ubigeo}")
-    public ResponseEntity<?> getUbigeoByUbigeo(@PathVariable String ubigeo) {
+    public ResponseEntity<Ubigeo> getUbigeoByUbigeo(@PathVariable String ubigeo) {
         Ubigeo ubigeoEntity = ubigeoService.findByUbigeo(ubigeo);
         if (ubigeoEntity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Ubigeo not found").build());
+            throw new CustomException("Ubigeo not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(ubigeoEntity);
+        return ResponseEntity.ok().body(ubigeoEntity);
     }
 
     @GetMapping("/departments")
-    public ResponseEntity<?> getDepartments() {
+    public ResponseEntity<List<String>> getDepartments() {
         List<String> departments = ubigeoService.findAllDepartments();
         if (departments.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Departments not found").build());
+            throw new CustomException("Departments not found", HttpStatus.NOT_FOUND);
         }
-        Map<String, List<String>> response = Map.of("departments", departments);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(departments);
     }
 
     @GetMapping("/provinces")
-    public ResponseEntity<?> getProvincesByDepartment(@RequestParam String department) {
+    public ResponseEntity<List<String>> getProvincesByDepartment(@RequestParam String department) {
         List<String> provinces = ubigeoService.findProvincesByDepartment(department);
         if (provinces.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Provinces not found").build());
+            throw new CustomException("Provinces not found", HttpStatus.NOT_FOUND);
         }
-        Map<String, List<String>> response = Map.of("provinces", provinces);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(provinces);
     }
 
     @GetMapping("/districts")
-    public ResponseEntity<?> getDistrictsByDepartmentAndProvince(@RequestParam String department, @RequestParam String province) {
+    public ResponseEntity<List<String>> getDistrictsByDepartmentAndProvince(@RequestParam String department, @RequestParam String province) {
         List<String> districts = ubigeoService.findDistrictsByDepartmentAndProvince(department, province);
         if (districts.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Districts not found").build());
+            throw new CustomException("Districts not found", HttpStatus.NOT_FOUND);
         }
-        Map<String, List<String>> response = Map.of("districts", districts);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(districts);
     }
 
     @GetMapping("/ubigeo")
-    public ResponseEntity<?> getUbigeoByDepartmentAndProvinceAndDistrict(@RequestParam String department, @RequestParam String province, @RequestParam String district) {
+    public ResponseEntity<String> getUbigeoByDepartmentAndProvinceAndDistrict(@RequestParam String department, @RequestParam String province, @RequestParam String district) {
         String ubigeo = ubigeoService.findUbigeoByDepartmentAndProvinceAndDistrict(department, province, district);
         if (ubigeo == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Ubigeo not found").build());
+            throw new CustomException("Ubigeo not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(ubigeo);
     }
 
     @GetMapping("/ubigeo-object")
-    public ResponseEntity<?> getUbigeoByDepartmentAndProvinceAndDistrictObject(@RequestParam String department, @RequestParam String province, @RequestParam String district) {
+    public ResponseEntity<Ubigeo> getUbigeoByDepartmentAndProvinceAndDistrictObject(@RequestParam String department, @RequestParam String province, @RequestParam String district) {
         Ubigeo ubigeo = ubigeoService.findUbigeoByDepartmentAndProvinceAndDistrictObject(department, province, district);
         if (ubigeo == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Ubigeo not found").build());
+            throw new CustomException("Ubigeo not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(ubigeo);
     }

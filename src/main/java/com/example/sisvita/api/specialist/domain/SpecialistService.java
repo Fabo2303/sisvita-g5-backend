@@ -1,6 +1,6 @@
 package com.example.sisvita.api.specialist.domain;
 
-import com.example.sisvita.api.specialist.infrastructure.JpaSpecialistRepository;
+import com.example.sisvita.api.specialist.infrastructure.SpecialistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,26 +8,26 @@ import java.util.List;
 
 @Service
 public class SpecialistService {
-    private final JpaSpecialistRepository jpaSpecialistRepository;
+    private final SpecialistRepository specialistRepository;
 
     @Autowired
-    public SpecialistService(JpaSpecialistRepository jpaSpecialistRepository) {
-        this.jpaSpecialistRepository = jpaSpecialistRepository;
+    public SpecialistService(SpecialistRepository specialistRepository) {
+        this.specialistRepository = specialistRepository;
     }
 
     public Integer findIdByIdUser(Integer idUser) {
-        return jpaSpecialistRepository.findIdByIdUser(idUser);
+        return specialistRepository.findIdByIdUser(idUser);
     }
 
-    public Specialist save(Specialist specialist) {
-        return jpaSpecialistRepository.save(specialist);
+    public Boolean save(Specialist specialist) {
+        return specialistRepository.save(specialist);
     }
 
     public Specialist findById(Integer id) {
-        return jpaSpecialistRepository.findById(id).orElse(null);
+        return specialistRepository.findById(id);
     }
 
     public List<Specialist> findAll() {
-        return jpaSpecialistRepository.findAll();
+        return specialistRepository.findAll();
     }
 }

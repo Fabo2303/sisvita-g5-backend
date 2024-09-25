@@ -2,8 +2,8 @@ package com.example.sisvita.api.treatment.web;
 
 import com.example.sisvita.api.treatment.domain.Treatment;
 import com.example.sisvita.api.treatment.domain.TreatmentService;
-import com.example.sisvita.utilz.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,41 +11,46 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/treatment")
+@RequestMapping(Routes.API_TREATMENT)
 public class TreatmentController {
     private final TreatmentService treatmentService;
 
-    @Autowired
     public TreatmentController(TreatmentService treatmentService) {
         this.treatmentService = treatmentService;
     }
 
     @PostMapping()
-    public ResponseEntity<?> save(@RequestBody Treatment treatment) {
-        Treatment savedTreatment = treatmentService.save(treatment);
-        return ResponseEntity.ok(savedTreatment);
+    public ResponseEntity<String> save(@RequestBody Treatment treatment) {
+        Boolean savedTreatment = treatmentService.save(treatment);
+        if (!savedTreatment) {
+            throw new CustomException("Treatment not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Treatment saved");
     }
 
     @PostMapping("/all")
-    public ResponseEntity<?> saveAll(@RequestBody List<Treatment> treatments) {
-        List<Treatment> savedTreatments = treatmentService.saveAll(treatments);
-        return ResponseEntity.ok(savedTreatments);
+    public ResponseEntity<String> saveAll(@RequestBody List<Treatment> treatments) {
+        Boolean savedTreatments = treatmentService.saveAll(treatments);
+        if (!savedTreatments) {
+            throw new CustomException("Treatments not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Treatments saved");
     }
 
     @GetMapping()
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<List<Treatment>> findAll() {
         List<Treatment> treatments = treatmentService.findAll();
         if (treatments.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Treatments not found").build());
+            throw new CustomException("No treatments found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(treatments);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<Treatment> findById(@PathVariable Integer id) {
         Treatment treatment = treatmentService.findById(id);
         if (treatment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder().message("Treatment not found").build());
+            throw new CustomException("Treatment not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(treatment);
     }

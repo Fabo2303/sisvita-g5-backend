@@ -2,7 +2,9 @@ package com.example.sisvita.api.anxietycolor.web;
 
 import com.example.sisvita.api.anxietycolor.domain.AnxietyColor;
 import com.example.sisvita.api.anxietycolor.domain.AnxietyColorService;
+import com.example.sisvita.utilz.CustomException;
 import com.example.sisvita.utilz.ErrorResponse;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/anxiety-color")
+@RequestMapping(Routes.API_ANXIETY_COLOR)
 public class AnxietyColorController {
     private final AnxietyColorService anxietyColorService;
 
@@ -20,32 +22,30 @@ public class AnxietyColorController {
         this.anxietyColorService = anxietyColorService;
     }
 
-    @PostMapping()
-    public ResponseEntity<?> createAnxietyColor(@RequestBody AnxietyColor anxietyColor) {
-        AnxietyColor savedAnxietyColor = anxietyColorService.save(anxietyColor);
-        return ResponseEntity.ok(savedAnxietyColor);
-    }
-
     @GetMapping()
-    public ResponseEntity<?> getAllAnxietyColors() {
+    public ResponseEntity<List<AnxietyColor>> findAll() {
         List<AnxietyColor> anxietyColors = anxietyColorService.findAll();
         if (anxietyColors.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Anxiety colors not found")
-                    .build());
+            throw new CustomException("Anxiety colors not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(anxietyColors);
     }
 
     @GetMapping("/{id}")
-
-    public ResponseEntity<?> getAnxietyColorById(@PathVariable Integer id) {
+    public ResponseEntity<AnxietyColor> findById(@PathVariable Integer id) {
         AnxietyColor anxietyColor = anxietyColorService.findById(id);
         if (anxietyColor == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Anxiety color not found")
-                    .build());
+            throw new CustomException("Anxiety color not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(anxietyColor);
+    }
+
+    @PostMapping()
+    public ResponseEntity<String> saveAnxietyColor(@RequestBody AnxietyColor anxietyColor) {
+        Boolean savedAnxietyColor = anxietyColorService.save(anxietyColor);
+        if (!savedAnxietyColor) {
+            throw new CustomException("Anxiety color not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Anxiety color saved");
     }
 }

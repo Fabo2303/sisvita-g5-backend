@@ -1,30 +1,28 @@
 package com.example.sisvita.api.anxietycolor.domain;
 
-import com.example.sisvita.api.anxietycolor.infrastructure.JpaAnxietyColorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.api.anxietycolor.infrastructure.AnxietyColorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AnxietyColorService {
-    private final JpaAnxietyColorRepository jpaAnxietyColorRepository;
+    private final AnxietyColorRepository anxietyColorRepository;
 
-    @Autowired
-    public AnxietyColorService(JpaAnxietyColorRepository jpaAnxietyColorRepository) {
-        this.jpaAnxietyColorRepository = jpaAnxietyColorRepository;
+    public AnxietyColorService(AnxietyColorRepository anxietyColorRepository) {
+        this.anxietyColorRepository = anxietyColorRepository;
     }
 
-    public AnxietyColor save(AnxietyColor anxietyColor) {
-        return jpaAnxietyColorRepository.save(anxietyColor);
+    public Boolean save(AnxietyColor anxietyColor) {
+        return anxietyColorRepository.save(anxietyColor);
     }
 
     public AnxietyColor findById(Integer id) {
-        return jpaAnxietyColorRepository.findById(id).orElse(null);
+        return anxietyColorRepository.findById(id);
     }
 
     public List<AnxietyColor> findAll() {
-        return jpaAnxietyColorRepository.findAll();
+        return anxietyColorRepository.findAll();
     }
 
 }

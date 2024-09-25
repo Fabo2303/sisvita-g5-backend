@@ -2,8 +2,8 @@ package com.example.sisvita.api.question.web;
 
 import com.example.sisvita.api.question.domain.Question;
 import com.example.sisvita.api.question.domain.QuestionService;
-import com.example.sisvita.utilz.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,28 +11,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping(Routes.API_QUESTION)
 public class QuestionController {
     private final QuestionService questionService;
 
-    @Autowired
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
     @PostMapping()
     public ResponseEntity<?> saveQuestion(@RequestBody Question question) {
-        Question savedQuestion = questionService.saveQuestion(question);
-        return ResponseEntity.ok(savedQuestion);
+        Boolean savedQuestion = questionService.saveQuestion(question);
+        if (!savedQuestion) {
+            throw new CustomException("Question not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Question saved");
     }
 
     @GetMapping()
     public ResponseEntity<?> findAll() {
         List<Question> questions = questionService.findAll();
         if (questions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Questions not found")
-                    .build());
+            throw new CustomException("No questions found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(questions);
     }
@@ -41,9 +41,7 @@ public class QuestionController {
     public ResponseEntity<?> findById(@PathVariable Integer id) {
         Question question = questionService.findById(id);
         if (question == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Question not found")
-                    .build());
+            throw new CustomException("Question not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().body(question);
     }

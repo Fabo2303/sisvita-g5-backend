@@ -1,6 +1,6 @@
 package com.example.sisvita.api.classification.domain;
 
-import com.example.sisvita.api.classification.infrastructure.JpaClassificationRepository;
+import com.example.sisvita.api.classification.infrastructure.ClassificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,14 +8,14 @@ import java.util.List;
 
 @Service
 public class ClassificationService {
-    private final JpaClassificationRepository classificationRepository;
+    private final ClassificationRepository classificationRepository;
 
     @Autowired
-    public ClassificationService(JpaClassificationRepository classificationRepository) {
+    public ClassificationService(ClassificationRepository classificationRepository) {
         this.classificationRepository = classificationRepository;
     }
 
-    public Classification saveClassification(Classification classification) {
+    public Boolean saveClassification(Classification classification) {
         return classificationRepository.save(classification);
     }
 
@@ -24,11 +24,11 @@ public class ClassificationService {
     }
 
     public Classification findById(Integer id) {
-        return classificationRepository.findById(id).orElse(null);
+        return classificationRepository.findById(id);
     }
 
     public Classification findByTemplateTestIdAndResult(Integer templateTestId, int result) {
-        return classificationRepository.findByTemplateTestIdAndResult(templateTestId, result).orElse(null);
+        return classificationRepository.findByTemplateTestIdAndResult(templateTestId, result);
     }
 
     public List<Classification> findByTemplateTestName(String templateTestName) {

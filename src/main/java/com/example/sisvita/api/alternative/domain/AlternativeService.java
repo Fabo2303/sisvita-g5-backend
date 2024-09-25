@@ -1,29 +1,27 @@
 package com.example.sisvita.api.alternative.domain;
 
-import com.example.sisvita.api.alternative.infrastructure.JpaAlternativeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.api.alternative.infrastructure.AlternativeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AlternativeService {
-    private final JpaAlternativeRepository jpaAlternativeRepository;
+    private final AlternativeRepository alternativeRepository;
 
-    @Autowired
-    public AlternativeService(JpaAlternativeRepository jpaAlternativeRepository) {
-        this.jpaAlternativeRepository = jpaAlternativeRepository;
+    public AlternativeService(AlternativeRepository alternativeRepository) {
+        this.alternativeRepository = alternativeRepository;
     }
 
     public List<Alternative> findAll() {
-        return jpaAlternativeRepository.findAll();
+        return alternativeRepository.findAll();
     }
 
     public Alternative findById(Integer id) {
-        return jpaAlternativeRepository.findById(id).orElse(null);
+        return alternativeRepository.findById(id);
     }
 
-    public Alternative save(Alternative alternative) {
-        return jpaAlternativeRepository.save(alternative);
+    public Boolean save(Alternative alternative) {
+        return alternativeRepository.save(alternative);
     }
 }

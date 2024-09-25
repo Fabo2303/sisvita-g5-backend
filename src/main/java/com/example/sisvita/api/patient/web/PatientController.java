@@ -2,19 +2,17 @@ package com.example.sisvita.api.patient.web;
 
 import com.example.sisvita.api.patient.domain.Patient;
 import com.example.sisvita.api.patient.domain.PatientService;
-import com.example.sisvita.api.patient.dto.PatientRequest;
-import com.example.sisvita.utilz.ErrorResponse;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("api/patient")
+@RequestMapping(Routes.API_PATIENT)
 public class PatientController {
     private final PatientService patientService;
 
@@ -24,35 +22,28 @@ public class PatientController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createPatient(@RequestBody PatientRequest patientRequest){
-        Patient patient = patientService.savePatient(patientRequest);
-        Map<String, String> response = new HashMap<>();
-        if (patient == null) {
-            response.put("error", "Error al crear paciente");
-            return ResponseEntity.badRequest().body(response);
+    public ResponseEntity<String> save(@RequestBody Patient patient){
+        Boolean savedPatient = patientService.savePatient(patient);
+        if (!savedPatient) {
+            throw new CustomException("Patient not saved", HttpStatus.BAD_REQUEST);
         }
-        response.put("message", "Paciente creado con éxito");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Patient saved");
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllPatients() {
+    public ResponseEntity<List<Patient>> findAll() {
         List<Patient> patients = patientService.findAll();
         if (patients.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Patients not found")
-                    .build());
+            throw new CustomException("No patients found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(patients);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPatientById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
         Patient patient = patientService.findById(id);
         if (patient == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Patient not found")
-                    .build());
+            throw new CustomException("Patient not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(patient);
     }
@@ -61,9 +52,7 @@ public class PatientController {
     public ResponseEntity<?> getIdByIdUser(@PathVariable Integer idUser) {
         Integer id = patientService.findIdByIdUser(idUser);
         if (id == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Patient not found")
-                    .build());
+            throw new CustomException("Patient not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(id);
     }

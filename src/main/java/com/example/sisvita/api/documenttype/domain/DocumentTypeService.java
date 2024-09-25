@@ -1,21 +1,20 @@
 package com.example.sisvita.api.documenttype.domain;
 
-import com.example.sisvita.api.documenttype.infrastructure.JpaDocumentTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.api.documenttype.infrastructure.DocumentTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DocumentTypeService {
-    private final JpaDocumentTypeRepository documentTypeRepository;
 
-    @Autowired
-    public DocumentTypeService(JpaDocumentTypeRepository documentTypeRepository) {
+    private final DocumentTypeRepository documentTypeRepository;
+
+    public DocumentTypeService(DocumentTypeRepository documentTypeRepository) {
         this.documentTypeRepository = documentTypeRepository;
     }
 
-    public DocumentType save(DocumentType documentType) {
+    public Boolean save(DocumentType documentType) {
         return documentTypeRepository.save(documentType);
     }
 
@@ -24,10 +23,10 @@ public class DocumentTypeService {
     }
 
     public DocumentType findById(Integer id) {
-        return documentTypeRepository.findById(id).orElse(null);
+        return documentTypeRepository.findById(id);
     }
 
     public DocumentType findByType(String type) {
-        return documentTypeRepository.findByType(type).orElse(null);
+        return documentTypeRepository.findByType(type);
     }
 }

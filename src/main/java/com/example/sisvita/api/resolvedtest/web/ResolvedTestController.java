@@ -2,32 +2,22 @@ package com.example.sisvita.api.resolvedtest.web;
 
 import com.example.sisvita.api.resolvedtest.domain.ResolvedTest;
 import com.example.sisvita.api.resolvedtest.domain.ResolvedTestService;
-import com.example.sisvita.api.resolvedtest.dto.request.ResolvedTestRequest;
 import com.example.sisvita.api.resolvedtest.dto.response.*;
 import com.example.sisvita.utilz.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resolved-test")
 public class ResolvedTestController {
     private final ResolvedTestService resolvedTestService;
 
-    @Autowired
     public ResolvedTestController(ResolvedTestService resolvedTestService) {
         this.resolvedTestService = resolvedTestService;
-    }
-
-    @PostMapping("/request")
-    public ResponseEntity<?> saveResolvedTest(@RequestBody ResolvedTestRequest resolvedTestRequest) {
-        Map<String, ?> message = resolvedTestService.saveResolvedTest(resolvedTestRequest);
-        return ResponseEntity.ok(message);
     }
 
     @GetMapping()
@@ -54,11 +44,11 @@ public class ResolvedTestController {
         return ResponseEntity.ok(resolvedTestsResponse);
     }
 
-    @GetMapping("/findById/dto/{id}")
+    /*@GetMapping("/findById/dto/{id}")
     public ResponseEntity<ResolvedTestReponseDataPatient> findByPatientId(@PathVariable Integer id) {
         ResolvedTestReponseDataPatient resolvedTestReponseDataPatient = resolvedTestService.findByIdAndReturnDataPatient(id);
         return ResponseEntity.ok().body(resolvedTestReponseDataPatient);
-    }
+    }*/
 
     @GetMapping("/findByIdPatient/{id}")
     public ResponseEntity<?> findByPatientId2(@PathVariable Integer id) {

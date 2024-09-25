@@ -1,6 +1,6 @@
 package com.example.sisvita.api.diagnosis.domain;
 
-import com.example.sisvita.api.diagnosis.infrastructure.JpaDiagnosisRepository;
+import com.example.sisvita.api.diagnosis.infrastructure.DiagnosisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,26 +8,26 @@ import java.util.List;
 
 @Service
 public class DiagnosisService {
-    private final JpaDiagnosisRepository jpaDiagnosisRepository;
+    private final DiagnosisRepository diagnosisRepository;
 
     @Autowired
-    public DiagnosisService(JpaDiagnosisRepository jpaDiagnosisRepository) {
-        this.jpaDiagnosisRepository = jpaDiagnosisRepository;
+    public DiagnosisService(DiagnosisRepository diagnosisRepository) {
+        this.diagnosisRepository = diagnosisRepository;
     }
 
-    public Diagnosis save(Diagnosis diagnosis) {
-        return jpaDiagnosisRepository.save(diagnosis);
+    public Boolean save(Diagnosis diagnosis) {
+        return diagnosisRepository.save(diagnosis);
     }
 
-    public List<Diagnosis> saveAll(List<Diagnosis> diagnoses) {
-        return jpaDiagnosisRepository.saveAll(diagnoses);
+    public Boolean saveAll(List<Diagnosis> diagnoses) {
+        return diagnosisRepository.saveAll(diagnoses);
     }
 
     public List<Diagnosis> findAll() {
-        return jpaDiagnosisRepository.findAll();
+        return diagnosisRepository.findAll();
     }
 
     public Diagnosis findById(Integer id) {
-        return jpaDiagnosisRepository.findById(id).orElse(null);
+        return diagnosisRepository.findById(id);
     }
 }

@@ -2,8 +2,8 @@ package com.example.sisvita.api.alternative.web;
 
 import com.example.sisvita.api.alternative.domain.Alternative;
 import com.example.sisvita.api.alternative.domain.AlternativeService;
-import com.example.sisvita.utilz.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.sisvita.utilz.CustomException;
+import com.example.sisvita.utilz.Routes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,40 +11,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/alternative")
+@RequestMapping(Routes.API_ALTERNATIVE)
 public class AlternativeController {
     private final AlternativeService alternativeService;
 
-    @Autowired
     public AlternativeController(AlternativeService alternativeService) {
         this.alternativeService = alternativeService;
     }
 
-    @PostMapping()
-    public ResponseEntity<?> saveAlternative(@RequestBody Alternative alternative) {
-        Alternative savedAlternative = alternativeService.save(alternative);
-        return ResponseEntity.ok(savedAlternative);
-    }
-
     @GetMapping()
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<List<Alternative>> findAll() {
         List<Alternative> alternatives = alternativeService.findAll();
         if (alternatives.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Alternatives not found")
-                    .build());
+            throw new CustomException("No alternatives found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(alternatives);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<Alternative> findById(@PathVariable Integer id) {
         Alternative alternative = alternativeService.findById(id);
         if (alternative == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
-                    .message("Alternative not found")
-                    .build());
+            throw new CustomException("Alternative not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().body(alternative);
+    }
+
+    @PostMapping()
+    public ResponseEntity<String> saveAlternative(@RequestBody Alternative alternative) {
+        Boolean savedAlternative = alternativeService.save(alternative);
+        if (!savedAlternative) {
+            throw new CustomException("Alternative not saved", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Alternative saved");
     }
 }

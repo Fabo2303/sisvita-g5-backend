@@ -1,12 +1,15 @@
 package com.example.sisvita.auth.domain;
 
-import com.example.sisvita.api.patient.infrastructure.JpaPatientRepository;
-import com.example.sisvita.api.specialist.infrastructure.JpaSpecialistRepository;
+import com.example.sisvita.api.patient.infrastructure.PatientRepository;
+import com.example.sisvita.api.specialist.infrastructure.SpecialistRepository;
 import com.example.sisvita.api.user.domain.User;
-import com.example.sisvita.api.user.infrastructure.JpaUserRepository;
+import com.example.sisvita.api.user.domain.UserService;
+import com.example.sisvita.api.user.infrastructure.UserRepository;
 import com.example.sisvita.auth.dto.AuthenticationRequest;
 import com.example.sisvita.auth.dto.AuthenticationResponse;
+import com.example.sisvita.utilz.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -16,30 +19,28 @@ import java.util.Map;
 
 @Service
 public class AuthenticationService {
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JpaUserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    private JpaSpecialistRepository specialistRepository;
+    private final JwtService jwtService;
 
-    @Autowired
-    private JpaPatientRepository patientRepository;
-
-    @Autowired
-    private JwtService jwtService;
+    public AuthenticationService(UserService userService, JwtService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+    }
 
     public AuthenticationResponse login(AuthenticationRequest authRequest) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                authRequest.getUsername(), authRequest.getPassword());
-        User user;
-        try {
-            authenticationManager.authenticate(authToken);
-            user = userRepository.findByUsername(authRequest.getUsername()).orElse(null);
-        } catch (Exception e) {
-            return new AuthenticationResponse(null);
+        User user = userService.findByUsername(authRequest.getUsername());
+        if (user == null) {
+            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (!userService.checkPassword(authRequest.getPassword(), user.getPassword())) {
+            throw new CustomException("Invalid password", HttpStatus.UNAUTHORIZED);
+        }
+
+        if (!user.isEnabled()) {
+            throw new CustomException("User is disabled", HttpStatus.UNAUTHORIZED);
         }
 
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
@@ -48,16 +49,10 @@ public class AuthenticationService {
     }
 
     private Map<String, Object> generateExtraClaims(User user) {
-        String id = "";
-        if (user.getRole().name().equals("SPECIALIST")){
-            id = specialistRepository.findIdByIdUser(user.getId()).toString();
-        } else if (user.getRole().name().equals("PATIENT")){
-            id = patientRepository.findIdByIdUser(user.getId()).toString();
-        }
+        String id = String.valueOf(user.getId());
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("name", user.getUsername());
-        extraClaims.put("role", user.getRole().name());
-        extraClaims.put("permissions", user.getAuthorities());
+        extraClaims.put("role", user.getRoleAuthority().name());
+        //extraClaims.put("permissions", user.getAuthorities());
         extraClaims.put("id", id);
         return extraClaims;
     }

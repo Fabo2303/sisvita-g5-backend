@@ -26,22 +26,4 @@ public class ResolvedTestReponseDataPatient {
     private String interpretation;
     private int result;
     private List<AnswerResponseDataPatient> answers;
-
-    public static ResolvedTestReponseDataPatient fromEntity(ResolvedTest resolvedTest) {
-        return ResolvedTestReponseDataPatient.builder()
-                .id(resolvedTest.getId())
-                .idPatient(resolvedTest.getPatient().getId())
-                .documentType(resolvedTest.getPatient().getUser().getPerson().getDocumentType().getType())
-                .document(resolvedTest.getPatient().getUser().getPerson().getDocument())
-                .name(resolvedTest.getPatient().getUser().getPerson().getName())
-                .lastName(resolvedTest.getPatient().getUser().getPerson().getLastName())
-                .secondLastName(resolvedTest.getPatient().getUser().getPerson().getSecondLastName())
-                .nameTemplateTest(resolvedTest.getTemplateTest().getName())
-                .colorClassification(resolvedTest.getClassification().getAnxietyColor().getColor())
-                .interpretation(resolvedTest.getClassification().getInterpretation())
-                .result(resolvedTest.getResult())
-                .answers(AnswerResponseDataPatient.fromEntityList(resolvedTest.getAnswers()))
-                .build();
-    }
-
 }
